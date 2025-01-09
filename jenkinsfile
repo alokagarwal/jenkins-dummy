@@ -1,0 +1,15 @@
+pipeline {
+    agent any
+    stages {
+        stage('hello AWS') {
+            steps {
+                withAWS(role:'jenkins-pipeline-aws-s3-role', roleAccount:'846558749899', externalId: 'testexternalid', duration: 900, roleSessionName: 'jenkins-session') {
+                    sh 'echo "hello KB">hello.txt'
+                    s3Upload acl: 'Private', bucket: 'test-bucket-jenkins-1', file: 'hello.txt'
+                    s3Download bucket: 'test-bucket-jenkins-1', file: 'downloadedHello.txt', path: 'hello.txt'
+                    sh 'cat downloadedHello.txt'
+                }
+            }
+        }
+    }
+}
