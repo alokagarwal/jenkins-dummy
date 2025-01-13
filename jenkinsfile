@@ -1,9 +1,12 @@
 pipeline {
     agent any
+    options {
+    	withAWS(region: 'us-east-1', credentials: '76344a12-3ba4-486e-8ae1-3ade6f032150')
+    }
     stages {
         stage('hello AWS') {
             steps {
-                withAWS(region: 'us-east-1', credentials: '76344a12-3ba4-486e-8ae1-3ade6f032150', role:'jenkins-pipeline-aws-s3-role', roleAccount:'846558749899', externalId: 'testexternalid', duration: 900, roleSessionName: 'jenkins-session') {
+                withAWS(role:'jenkins-pipeline-aws-s3-role', roleAccount:'846558749899', externalId: 'testexternalid', duration: 900, roleSessionName: 'jenkins-session') {
                     sh 'echo "hello KB">hello.txt'
                     s3Upload acl: 'Private', bucket: 'test-bucket-jenkins-1', file: 'hello.txt'
                     s3Download bucket: 'test-bucket-jenkins-1', file: 'downloadedHello.txt', path: 'hello.txt'
